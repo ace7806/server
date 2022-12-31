@@ -19,7 +19,7 @@ class GasStation(db.Model):
     def serialize_gas_stations(gasStations):
         return [x.to_dict() for x in gasStations]
 
-    def to_geojson(self):
+    def to_geoJson_dict(self):
         # Create the GeoJSON feature
         feature = {
             'type': 'Feature',
@@ -32,8 +32,10 @@ class GasStation(db.Model):
                 'coordinates': [self.longitud, self.latitude]
             }
         }
-        # Convert the feature to a JSON string and return it
-        return json.dumps(feature)
+        return feature
+
+    def to_geoJson(self):
+        return json.dumps(self.to_geoJson_dict())
 
 
     
