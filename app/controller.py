@@ -1,6 +1,6 @@
 from app.models import GasStation
 from app import db
-from app.utils import calculate_distance_in_miles
+from app.utils import calculate_distance_in_miles, serialize_gasStations
 import heapq
 from sqlalchemy.sql import text
 
@@ -8,9 +8,8 @@ RADIUS_IN_MILES = 3
 
 def get_closest_gasStations_sql_query(long,lat):
     query_string = f"SELECT *, (6371.0 * ACOS(COS(RADIANS(90 - {lat})) * COS(RADIANS(90 - latitude)) + SIN(RADIANS(90 - {lat})) * SIN(RADIANS(90 - latitude)) * COS(RADIANS({long} - longitud)))) AS distance FROM gas_station ORDER BY distance LIMIT 5"
-    result = GasStation.query.from_statement(text(query_string))
-    for row in result:
-        print(row)
+    gasStations = GasStation.query.from_statement(text(query_string))
+    return gasStations
 
 def get_closest_gasStations(lat,long):
     #TODO: optimize code. Im thinking i can do lines 10 to 16 with a sort one liner or do calcuations when doing the query     
