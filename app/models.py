@@ -16,9 +16,6 @@ class GasStation(db.Model):
             "pricePerLiter":self.pricePerLiter,
         }
 
-    def serialize_gas_stations(gasStations):
-        return [x.to_dict() for x in gasStations]
-
     def to_geoJson_dict(self):
         # Create the GeoJSON feature
         feature = {
