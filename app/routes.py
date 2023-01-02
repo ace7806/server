@@ -1,7 +1,8 @@
 from app import app, db
 from app.models import GasStation
 from app.controller import get_closest_gasStations, get_closest_gasStations_sql_query
-from flask import request,jsonify, Flask, make_response
+from app.utils import serialize_gasStations
+from flask import request,jsonify
 from scripts.populateSqliteDB import populate_db
 @app.route("/")
 def index():
@@ -25,12 +26,10 @@ def add_gasStation():
 
 @app.route("/gasStations",methods=['GET'])
 def get_nearby_gasStations():
-    gasStations = get_closest_gasStations(18.3138514,-67.14902119999999)    
-    data = GasStation.serialize_gas_stations(gasStations)
-    json_string = jsonify(data)
     # create a custom Response object and pass JSON data and the HTTP status code as arguments
-    get_closest_gasStations_sql_query(-67.14902119999999,18.3138514)
-    return json_string
+    gasStations = get_closest_gasStations_sql_query(-67.14902119999999,18.3138514)
+    geoJson = serialize_gasStations(gasStations)
+    return geoJson
 
 @app.route('/update/<int:id>', methods=['PATCH'])
 def update_gasStation_price(id):
