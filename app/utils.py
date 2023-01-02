@@ -1,6 +1,5 @@
 from geopy.distance import geodesic
-import json
-import re
+from flask import jsonify
 
 def calculate_distance_in_miles(lat1,long1,lat2,long2):
 
@@ -9,5 +8,5 @@ def calculate_distance_in_miles(lat1,long1,lat2,long2):
 def serialize_gasStations(gasStations):
     geoJsons = [x.to_geoJson_dict() for x in gasStations]
     feature_collection = {"type": "FeatureCollection", "features": geoJsons}
-    return feature_collection
+    return jsonify(feature_collection)
 
