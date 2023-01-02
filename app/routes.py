@@ -3,7 +3,6 @@ from app.models import GasStation
 from app.controller import get_closest_gasStations, get_closest_gasStations_sql_query
 from app.utils import serialize_gasStations
 from flask import request,jsonify
-from scripts.populateSqliteDB import populate_db
 @app.route("/")
 def index():
     # Select all rows from the table
@@ -39,13 +38,5 @@ def update_gasStation_price(id):
     
     db.session.commit()
     return 'thanks'
-
-@app.route("/dummyData")
-def dummy_data():
-    populate_db()
-    return 'populated the db with dummy data'
-
-
-
 
 
