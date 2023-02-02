@@ -1,0 +1,16 @@
+import sqlite3
+from scripts.dacoPageScrape import scrape
+
+
+def update_price_from_scrap_data():
+    data = scrape()
+    conn = sqlite3.connect('instance/gas_stations_with_price.sqlite')
+    c = conn.cursor()
+    for gas_station in data:
+        # Update the "price" column for all rows that have a similar "title" value
+        c.execute("UPDATE gas_station SET price=? WHERE name LIKE ?",
+                  (gas_station['prices']['regular'], '%'+gas_station['name']+'%'))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()

@@ -1,19 +1,21 @@
 from app import db
 import json
+
+
 class GasStation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    latitude = db.Column(db.Float)
-    longitud = db.Column(db.Float)
-    pricePerLiter = db.Column(db.Float)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    price = db.Column(db.Float)
 
     def to_dict(self):
         return {
-            'id':self.id,
-            "name":self.name,
-            "latitude":self.latitude,
-            "longitud":self.longitud,
-            "pricePerLiter":self.pricePerLiter,
+            'id': self.id,
+            "name": self.name,
+            "lat": self.lat,
+            "lng": self.lng,
+            "price": self.price,
         }
 
     def to_geoJson_dict(self):
@@ -22,17 +24,14 @@ class GasStation(db.Model):
             'type': 'Feature',
             'properties': {
                 'name': self.name,
-                'pricePerLiter': self.pricePerLiter
+                'price': self.price
             },
             'geometry': {
                 'type': 'Point',
-                'coordinates': [self.longitud, self.latitude]
+                'coordinates': [self.lng, self.lat]
             }
         }
         return feature
 
     def to_geoJson(self):
         return json.dumps(self.to_geoJson_dict())
-
-
-    
