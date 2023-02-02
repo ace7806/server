@@ -1,33 +1,32 @@
 from app.models import GasStation
-from app import db
-from app.utils import calculate_distance_in_miles, serialize_gasStations
-import heapq
 from sqlalchemy.sql import text
-
+from app import db
 RADIUS_IN_MILES = 3
 
-def get_closest_gasStations_sql_query(long,lat):
-    query_string = f"SELECT *, (6371.0 * ACOS(COS(RADIANS(90 - {lat})) * COS(RADIANS(90 - latitude)) + SIN(RADIANS(90 - {lat})) * SIN(RADIANS(90 - latitude)) * COS(RADIANS({long} - longitud)))) AS distance FROM gas_station ORDER BY distance LIMIT 5"
+
+def get_closest_gasStations(long, lat):
+    query_string = f"SELECT *, (6371.0 * ACOS(COS(RADIANS(90 - {lat})) * COS(RADIANS(90 - lat)) + SIN(RADIANS(90 - {lat})) * SIN(RADIANS(90 - lat)) * COS(RADIANS({long} - lng)))) AS distance FROM gas_station ORDER BY distance LIMIT 5"
     gasStations = GasStation.query.from_statement(text(query_string))
     return gasStations
 
-def get_closest_gasStations(lat,long):
-    #TODO: optimize code. Im thinking i can do lines 10 to 16 with a sort one liner or do calcuations when doing the query     
 
-    #get all the Gas Stations from the database
-    gasStations = GasStation.query.all()
+def get_gas_stations_in_radius(lng, lat, radius):
+    query_string = text(
+        f"SELECT *, (6371.0 * ACOS(COS(RADIANS(90 - {lat})) * COS(RADIANS(90 - lat)) + SIN(RADIANS(90 - {lat})) * SIN(RADIANS(90 - lat)) * COS(RADIANS({lng} - lng)))) AS distance FROM gas_station GROUP BY id HAVING distance < {radius} ORDER BY distance")
 
-    #sort based on distance from point
-    mq= []
-    for x in gasStations:
-        heapq.heappush(mq,(calculate_distance_in_miles(lat,long,x.latitude,x.longitud), x))
-    #extract the gas stations from minHeap
-    size = min(5,len(mq))
-    gasStations = [heapq.heappop(mq)[1] for x in range(size)]
-    for x in gasStations:print(x.name)
+    gasStations = GasStation.query.from_statement(
+        query_string)
     return gasStations
 
-def get_best_gas_station_near(lat,long):
-    gasStations = get_closest_gasStations(lat,long)
-    return min(gasStations, key = lambda x: x.pricePerLiter)
 
+def get_best_gas_station_near(lat, long):
+    gasStations = get_closest_gasStations(lat, long)
+    return min(gasStations, key=lambda x: x.price)
+
+
+def update_price_by_name(name, price):
+    gas_stations = GasStation.query.filter(
+        GasStation.name.like(f"%{name}%")).all()
+    for gas_station in gas_stations:
+        gas_station.price = price
+    db.session.commit()
