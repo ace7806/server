@@ -45,7 +45,7 @@ def get_nearby_gasStations():
     return geoJson
 
 @app.route("/lol", methods=['GET'])
-def get_nearby_gasStations():
+def update():
     update_todays_prices()
     return 'yayyyy'
 
