@@ -2,7 +2,6 @@ from app import app, db
 from app.models import GasStation
 from app.controller import get_closest_gasStations, get_gas_stations_in_radius
 from app.utils import serialize_gasStations
-from scripts.update_gas_prices import update_price_from_scrap_data
 from flask import request
 
 
@@ -11,6 +10,7 @@ def get_nearby_gasStations_by_radius():
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     rad = request.args.get('rad')
+    if not lat or not lng or not rad: return 'arguments are missing'
     gasStations = get_gas_stations_in_radius(
         lng, lat, rad)
     geoJson = serialize_gasStations(gasStations)
@@ -51,9 +51,3 @@ def update_gasStation_price(id):
     gasStation.price = newPrice
     db.session.commit()
     return 'thanks'
-
-
-@app.route('/update')
-def update_todays_prices():
-    update_price_from_scrap_data()
-    return 'updated, thanks!'

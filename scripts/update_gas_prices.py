@@ -2,7 +2,7 @@ import sqlite3
 from scripts.dacoPageScrape import scrape
 
 
-def update_price_from_scrap_data():
+def update_todays_prices():
     data = scrape()
     conn = sqlite3.connect('instance/gas_stations_with_price.sqlite')
     c = conn.cursor()
