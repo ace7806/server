@@ -1,5 +1,5 @@
 import sqlite3
-from dacoPageScrape import scrape
+from scripts.dacoPageScrape import scrape
 
 
 def update_todays_prices():
