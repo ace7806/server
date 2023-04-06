@@ -1,7 +1,6 @@
 from app import app, db
 from app.models import GasStation
 from app.controller import get_closest_gasStations, get_gas_stations_in_radius
-from scripts.update_gas_prices import update_todays_prices
 from app.utils import serialize_gasStations
 from flask import request
 
@@ -43,12 +42,6 @@ def get_nearby_gasStations():
         lng, lat)
     geoJson = serialize_gasStations(gasStations)
     return geoJson
-
-@app.route("/lol", methods=['GET'])
-def update():
-    update_todays_prices()
-    return 'yayyyy'
-
 
 @app.route('/update/<int:id>', methods=['PATCH'])
 def update_gasStation_price(id):
