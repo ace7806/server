@@ -6,4 +6,4 @@ def gas_price_update_job():
     print('Gas price update job has been executed')
 scheduler = BackgroundScheduler()
 scheduler.add_job(gas_price_update_job, 'interval', 
-                  seconds=1)
+                  days=1)
